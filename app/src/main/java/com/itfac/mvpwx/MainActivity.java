@@ -8,32 +8,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.itfac.mvpwx.controller.MainController;
-import com.itfac.mvpwx.data.StudentList;
 
-import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainView {
 
     private Button sampleButton;
     private TextView studentName;
     private TextView studentListTxt;
 
     private EditText inputName;
-
-    private MainController mainController;
+    private MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainController = new MainController();
 
         initViews();
         initActions();
 
-        showStidentList();
+        presenter = new MainPresenter(this);
     }
 
     private void initViews(){
@@ -50,21 +45,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         String nameSting = inputName.getText().toString();
-        String manipulatedText = mainController.showGreetings(nameSting);
-        studentName.setText(manipulatedText);
-        showStidentList();
+        presenter.showGreetings(nameSting);
     }
 
-    private void showStidentList(){
-        ArrayList<String> stringArrayList = StudentList.getInstance().getStudentsList();
+    @Override
+    public void setManipulatedText(String manipulatedText) {
+        studentName.setText(manipulatedText);
+    }
 
-
-        String listOfStudents = "";
-
-        for (String student : stringArrayList){
-            listOfStudents = listOfStudents + student +"\n";
-        }
-
-        studentListTxt.setText(listOfStudents);
+    @Override
+    public void setStudentList(String studentList) {
+        studentListTxt.setText(studentList);
     }
 }
